@@ -13,7 +13,9 @@ def convert_to_wav(in_file):
     file_name, file_ext = os.path.splitext(in_file)
     out_file = file_name + "1.wav"
 
-    process = subprocess.check_call(['ffmpeg', '-i', in_file, '-bitexact', '-y','-ar', '16000', '-ac', '1', out_file])
+    process = subprocess.check_call(['ffmpeg', '-i', in_file, '-bitexact',\
+                                     '-y','-ar', '16000', '-ac', '1',\
+                                         out_file])
 
 
 '''
