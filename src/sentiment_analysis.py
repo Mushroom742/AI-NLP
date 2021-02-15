@@ -54,9 +54,8 @@ def plot_loss(history):
     #plt.show()
     plt.savefig("../results/sentiment_analysis_loss.png")
     plt.close()
-
-if __name__ == "__main__":
     
+def main(sentences):
     #ouverture du fichier et mélange des données
     data = pd.read_csv("../data/french_tweets.csv")
     data = data.sample(frac=1).reset_index(drop=True)
@@ -100,19 +99,22 @@ if __name__ == "__main__":
         model = tensorflow.keras.models.load_model('../results/model_sentiment_analysis')
 
     
-#prédictions
-    test_pos = "Aujourd'hui il fait beau, cela me donne envie de sortir et de faire la fête"
-    test_neg = "Aujourd'hui il fait tout gris et moche, cela me donne envie de rester sous la couette et de ne rien faire"
+    #prédictions
+    predictions = []
     
-    for sent in test_pos, test_neg:
+    # test_pos = "Aujourd'hui il fait beau, cela me donne envie de sortir et de faire la fête"
+    # test_neg = "Aujourd'hui il fait tout gris et moche, cela me donne envie de rester sous la couette et de ne rien faire"
+    
+    for sent in sentences:
         seq = pad_sequences(tokenizer.texts_to_sequences([sent]),\
                             maxlen=input_length)
-        prediction = int(model.predict(seq).round().item())
-        print(sent)
-        if prediction == 1:
-            print('positif')
-        else:
-            print('négatif')
+        predictions.append(int(model.predict(seq).round().item()))
+        #print(sent)
+        # if prediction == 1:
+        #     print('positif')
+        # else:
+        #     print('négatif')
+    return predictions
 
-
-
+if __name__ == "__main__":
+    main([])
