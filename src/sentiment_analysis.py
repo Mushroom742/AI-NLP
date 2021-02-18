@@ -33,6 +33,9 @@ def preprocessing_data(texts, num_words=5000):
 
     return (tokenizer,padded_sequences, vocab_size, len(padded_sequences[0]))
 
+'''
+Graphique de la précison du modèle
+'''
 def plot_accuracy(history):
     plt.plot(history.history['accuracy'])
     plt.plot(history.history['val_accuracy'])
@@ -44,18 +47,25 @@ def plot_accuracy(history):
     plt.savefig("../results/sentiment_analysis_accuracy.png")
     plt.close()
 
+'''
+Graphique de la perte du modèle
+'''
 def plot_loss(history):
     plt.plot(history.history['loss'])
     plt.plot(history.history['val_loss'])
     plt.title('Erreur du modèle')
     plt.ylabel('Erreur')
     plt.xlabel('Répétitions')
-    plt.legend(['entraînement', 'validation'], loc='upper left')
+    plt.legend(['entraînement', 'validation'], loc='upper right')
     #plt.show()
     plt.savefig("../results/sentiment_analysis_loss.png")
     plt.close()
     
+'''
+Création du modèle + entrainement + prédictions
+'''
 def main(sentences):
+    
     #ouverture du fichier et mélange des données
     data = pd.read_csv("../data/french_tweets.csv")
     data = data.sample(frac=1).reset_index(drop=True)
@@ -67,7 +77,9 @@ def main(sentences):
     tokenizer, padded_sequences, vocab_size,\
         input_length = preprocessing_data(texts)
         
+    #si le modèle n'existe pas
     if not os.path.exists("../results/model_sentiment_analysis"):
+        
         #construction du modèle
         embedding_vector_length = 32
         model = Sequential()
@@ -88,7 +100,7 @@ def main(sentences):
     
         print(model.summary())
     
-        #sauvegarde du modele
+        #sauvegarde du modèle
         model.save("../results/model_sentiment_analysis")
     
         #graphique
@@ -102,18 +114,11 @@ def main(sentences):
     #prédictions
     predictions = []
     
-    # test_pos = "Aujourd'hui il fait beau, cela me donne envie de sortir et de faire la fête"
-    # test_neg = "Aujourd'hui il fait tout gris et moche, cela me donne envie de rester sous la couette et de ne rien faire"
-    
     for sent in sentences:
         seq = pad_sequences(tokenizer.texts_to_sequences([sent]),\
                             maxlen=input_length)
         predictions.append(int(model.predict(seq).round().item()))
-        #print(sent)
-        # if prediction == 1:
-        #     print('positif')
-        # else:
-        #     print('négatif')
+
     return predictions
 
 if __name__ == "__main__":

@@ -54,14 +54,8 @@ def speech_to_text(file):
                 if ('result' in res):
                     timestamp.append(res['result'][0]['start'])
                     text.append(res['text'])
-                #print('[ ',res['result'][0]['start'],' ] ',res['text'])
 
             #lecture du bloc de frames suivant
             data = wav_file.readframes(4000)
 
     return timestamp, text
-
-# if __name__ == "__main__":
-#     file = '../data/test/Macron.wav'
-#     convert_to_wav(file)
-#     speech_to_text('../data/test/Macron1.wav')

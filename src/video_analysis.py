@@ -7,6 +7,7 @@ import cv2
 from ffpyplayer.player import MediaPlayer
 import textwrap
 from unidecode import unidecode
+import action_recognition_bis
 
 '''
 Formate la transcription du texte pour en faire des sous titres
@@ -35,9 +36,6 @@ if __name__ == '__main__':
 
     #analyse des sentiments
     sentiments = sentiment_analysis.main(text)
-
-    #formatage des sous titres
-    sub_text = format_subtitles(text)
 
     #ouverture de la vidéo
     cap = cv2.VideoCapture(sys.argv[1])
@@ -68,13 +66,17 @@ if __name__ == '__main__':
     #fermeture de la vidéo
     cap.release()
 
-        #analyse mouvement
+    #analyse mouvement
+    movements = action_recognition_bis.predict(frames, faces)
 
     #intervalle entre chaque image pour la lecture
     interval = int(1000/fps)
 
     #lecteur audio
     player = MediaPlayer(sys.argv[1])
+
+    #formatage des sous titres
+    sub_text = format_subtitles(text)
 
     #compteur pour les sous titres
     i = 0
@@ -83,11 +85,25 @@ if __name__ == '__main__':
     #police des sous titres
     font = cv2.FONT_HERSHEY_PLAIN
 
+    #index de la liste des mouvements
+    ind_mov = 0
+
     #lecture de chaque image
     for num_frame, (frame, face) in enumerate(zip(frames, faces)):
 
-        #rectangle bleu autour de chaque visage
-        cv2.rectangle(frame, (face[0][0], face[0][1]), (face[0][2], face[0][3]), (255,0,0), thickness=3)
+        #rectangle autour de chaque visage
+        if(face != []):
+            if movements[ind_mov] == 1:
+
+                #parle -> vert
+                cv2.rectangle(frame, (face[0][0], face[0][1]), \
+                            (face[0][2], face[0][3]), (0,255,0), thickness=3)
+            else:
+
+                #ne parle pas -> rouge
+                cv2.rectangle(frame, (face[0][0], face[0][1]), \
+                            (face[0][2], face[0][3]), (0,0,255), thickness=3)
+            ind_mov += 1
 
         #temps actuel en secondes
         time = int(num_frame/fps)
@@ -110,11 +126,11 @@ if __name__ == '__main__':
                 color = (0,0,255)
 
             #hauteur des sous titres
-            y = height - 50
+            y = height - 100
 
             #affichage des sous titres sur plusieurs lignes avec 15 pixels d'écart
             for sent in sub_text[i]:
-                cv2.putText(frame, sent, (50, y), font, 1, color, 1, cv2.LINE_AA)
+                cv2.putText(frame, sent, (100, y), font, 1, color, 1, cv2.LINE_AA)
                 y += 15
 
         #lecture de l'audio
