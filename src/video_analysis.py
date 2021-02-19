@@ -67,7 +67,7 @@ if __name__ == '__main__':
     cap.release()
 
     #analyse mouvement
-    movements = action_recognition_bis.predict(frames, faces)
+    #movements = action_recognition_bis.predict(frames, faces)
 
     #intervalle entre chaque image pour la lecture
     interval = int(1000/fps)
@@ -86,24 +86,26 @@ if __name__ == '__main__':
     font = cv2.FONT_HERSHEY_PLAIN
 
     #index de la liste des mouvements
-    ind_mov = 0
+    #ind_mov = 0
 
     #lecture de chaque image
     for num_frame, (frame, face) in enumerate(zip(frames, faces)):
 
         #rectangle autour de chaque visage
         if(face != []):
-            if movements[ind_mov] == 1:
-
-                #parle -> vert
-                cv2.rectangle(frame, (face[0][0], face[0][1]), \
-                            (face[0][2], face[0][3]), (0,255,0), thickness=3)
-            else:
-
-                #ne parle pas -> rouge
-                cv2.rectangle(frame, (face[0][0], face[0][1]), \
-                            (face[0][2], face[0][3]), (0,0,255), thickness=3)
-            ind_mov += 1
+            # if movements[ind_mov] == 1:
+            #
+            #     #parle -> vert
+            #     cv2.rectangle(frame, (face[0][0], face[0][1]), \
+            #                 (face[0][2], face[0][3]), (0,255,0), thickness=3)
+            # else:
+            #
+            #     #ne parle pas -> rouge
+            #     cv2.rectangle(frame, (face[0][0], face[0][1]), \
+            #                 (face[0][2], face[0][3]), (0,0,255), thickness=3)
+            # ind_mov += 1
+            cv2.rectangle(frame, (face[0][0], face[0][1]), \
+                             (face[0][2], face[0][3]), (255,0,0), thickness=3)
 
         #temps actuel en secondes
         time = int(num_frame/fps)

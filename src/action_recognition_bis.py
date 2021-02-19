@@ -150,7 +150,7 @@ def predict(frames, faces, nb_frames=10, dim=(256,256)):
                 #prediction
                 frames_tmp = np.array(frames_tmp)
                 prediction = int(model.predict(frames_tmp).round().item())
-                for range(nb_frames):
+                for _ in range(nb_frames):
                     predictions.append(prediction)
 
                 #reset
